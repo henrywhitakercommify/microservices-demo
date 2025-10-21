@@ -23,9 +23,16 @@ jobs:
       with:
         version: '2.16.1'
 
+    - name: Log in to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Skaffold build local
       run: |
-        SKAFFOLD_DEFAULT_REPO=ghcr.io/${{ github.repository_owner }} \
+        SKAFFOLD_DEFAULT_REPO=ghcr.io/henrywhitakercommify \
         skaffold build \
         --push=false \
         --filename='skaffold.yaml' \
