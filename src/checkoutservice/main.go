@@ -218,15 +218,24 @@ func mustConnGRPC(ctx context.Context, conn **grpc.ClientConn, addr string) {
 	}
 }
 
-func (cs *checkoutService) Check(ctx context.Context, req *healthpb.HealthCheckRequest) (*healthpb.HealthCheckResponse, error) {
+func (cs *checkoutService) Check(
+	ctx context.Context,
+	req *healthpb.HealthCheckRequest,
+) (*healthpb.HealthCheckResponse, error) {
 	return &healthpb.HealthCheckResponse{Status: healthpb.HealthCheckResponse_SERVING}, nil
 }
 
-func (cs *checkoutService) Watch(req *healthpb.HealthCheckRequest, ws healthpb.Health_WatchServer) error {
+func (cs *checkoutService) Watch(
+	req *healthpb.HealthCheckRequest,
+	ws healthpb.Health_WatchServer,
+) error {
 	return status.Errorf(codes.Unimplemented, "health check via Watch not implemented")
 }
 
-func (cs *checkoutService) PlaceOrder(ctx context.Context, req *pb.PlaceOrderRequest) (*pb.PlaceOrderResponse, error) {
+func (cs *checkoutService) PlaceOrder(
+	ctx context.Context,
+	req *pb.PlaceOrderRequest,
+) (*pb.PlaceOrderResponse, error) {
 	log.Infof("[PlaceOrder] user_id=%q user_currency=%q", req.UserId, req.UserCurrency)
 
 	orderID, err := uuid.NewUUID()
@@ -234,7 +243,12 @@ func (cs *checkoutService) PlaceOrder(ctx context.Context, req *pb.PlaceOrderReq
 		return nil, status.Errorf(codes.Internal, "failed to generate order uuid")
 	}
 
-	prep, err := cs.prepareOrderItemsAndShippingQuoteFromCart(ctx, req.UserId, req.UserCurrency, req.Address)
+	prep, err := cs.prepareOrderItemsAndShippingQuoteFromCart(
+		ctx,
+		req.UserId,
+		req.UserCurrency,
+		req.Address,
+	)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, err.Error())
 	}
@@ -284,7 +298,11 @@ type orderPrep struct {
 	shippingCostLocalized *pb.Money
 }
 
-func (cs *checkoutService) prepareOrderItemsAndShippingQuoteFromCart(ctx context.Context, userID, userCurrency string, address *pb.Address) (orderPrep, error) {
+func (cs *checkoutService) prepareOrderItemsAndShippingQuoteFromCart(
+	ctx context.Context,
+	userID, userCurrency string,
+	address *pb.Address,
+) (orderPrep, error) {
 	var out orderPrep
 	cartItems, err := cs.getUserCart(ctx, userID)
 	if err != nil {
@@ -309,7 +327,11 @@ func (cs *checkoutService) prepareOrderItemsAndShippingQuoteFromCart(ctx context
 	return out, nil
 }
 
-func (cs *checkoutService) quoteShipping(ctx context.Context, address *pb.Address, items []*pb.CartItem) (*pb.Money, error) {
+func (cs *checkoutService) quoteShipping(
+	ctx context.Context,
+	address *pb.Address,
+	items []*pb.CartItem,
+) (*pb.Money, error) {
 	shippingQuote, err := pb.NewShippingServiceClient(cs.shippingSvcConn).
 		GetQuote(ctx, &pb.GetQuoteRequest{
 			Address: address,
@@ -321,7 +343,8 @@ func (cs *checkoutService) quoteShipping(ctx context.Context, address *pb.Addres
 }
 
 func (cs *checkoutService) getUserCart(ctx context.Context, userID string) ([]*pb.CartItem, error) {
-	cart, err := pb.NewCartServiceClient(cs.cartSvcConn).GetCart(ctx, &pb.GetCartRequest{UserId: userID})
+	cart, err := pb.NewCartServiceClient(cs.cartSvcConn).
+		GetCart(ctx, &pb.GetCartRequest{UserId: userID})
 	if err != nil {
 		return nil, fmt.Errorf("failed to get user cart during checkout: %+v", err)
 	}
@@ -335,7 +358,11 @@ func (cs *checkoutService) emptyUserCart(ctx context.Context, userID string) err
 	return nil
 }
 
-func (cs *checkoutService) prepOrderItems(ctx context.Context, items []*pb.CartItem, userCurrency string) ([]*pb.OrderItem, error) {
+func (cs *checkoutService) prepOrderItems(
+	ctx context.Context,
+	items []*pb.CartItem,
+	userCurrency string,
+) ([]*pb.OrderItem, error) {
 	out := make([]*pb.OrderItem, len(items))
 	cl := pb.NewProductCatalogServiceClient(cs.productCatalogSvcConn)
 
@@ -346,7 +373,11 @@ func (cs *checkoutService) prepOrderItems(ctx context.Context, items []*pb.CartI
 		}
 		price, err := cs.convertCurrency(ctx, product.GetPriceUsd(), userCurrency)
 		if err != nil {
-			return nil, fmt.Errorf("failed to convert price of %q to %s", item.GetProductId(), userCurrency)
+			return nil, fmt.Errorf(
+				"failed to convert price of %q to %s",
+				item.GetProductId(),
+				userCurrency,
+			)
 		}
 		out[i] = &pb.OrderItem{
 			Item: item,
@@ -355,17 +386,26 @@ func (cs *checkoutService) prepOrderItems(ctx context.Context, items []*pb.CartI
 	return out, nil
 }
 
-func (cs *checkoutService) convertCurrency(ctx context.Context, from *pb.Money, toCurrency string) (*pb.Money, error) {
-	result, err := pb.NewCurrencyServiceClient(cs.currencySvcConn).Convert(context.TODO(), &pb.CurrencyConversionRequest{
-		From:   from,
-		ToCode: toCurrency})
+func (cs *checkoutService) convertCurrency(
+	ctx context.Context,
+	from *pb.Money,
+	toCurrency string,
+) (*pb.Money, error) {
+	result, err := pb.NewCurrencyServiceClient(cs.currencySvcConn).
+		Convert(context.TODO(), &pb.CurrencyConversionRequest{
+			From:   from,
+			ToCode: toCurrency})
 	if err != nil {
 		return nil, fmt.Errorf("failed to convert currency: %+v", err)
 	}
 	return result, err
 }
 
-func (cs *checkoutService) chargeCard(ctx context.Context, amount *pb.Money, paymentInfo *pb.CreditCardInfo) (string, error) {
+func (cs *checkoutService) chargeCard(
+	ctx context.Context,
+	amount *pb.Money,
+	paymentInfo *pb.CreditCardInfo,
+) (string, error) {
 	paymentResp, err := pb.NewPaymentServiceClient(cs.paymentSvcConn).Charge(ctx, &pb.ChargeRequest{
 		Amount:     amount,
 		CreditCard: paymentInfo})
@@ -375,17 +415,27 @@ func (cs *checkoutService) chargeCard(ctx context.Context, amount *pb.Money, pay
 	return paymentResp.GetTransactionId(), nil
 }
 
-func (cs *checkoutService) sendOrderConfirmation(ctx context.Context, email string, order *pb.OrderResult) error {
-	_, err := pb.NewEmailServiceClient(cs.emailSvcConn).SendOrderConfirmation(ctx, &pb.SendOrderConfirmationRequest{
-		Email: email,
-		Order: order})
+func (cs *checkoutService) sendOrderConfirmation(
+	ctx context.Context,
+	email string,
+	order *pb.OrderResult,
+) error {
+	_, err := pb.NewEmailServiceClient(cs.emailSvcConn).
+		SendOrderConfirmation(ctx, &pb.SendOrderConfirmationRequest{
+			Email: email,
+			Order: order})
 	return err
 }
 
-func (cs *checkoutService) shipOrder(ctx context.Context, address *pb.Address, items []*pb.CartItem) (string, error) {
-	resp, err := pb.NewShippingServiceClient(cs.shippingSvcConn).ShipOrder(ctx, &pb.ShipOrderRequest{
-		Address: address,
-		Items:   items})
+func (cs *checkoutService) shipOrder(
+	ctx context.Context,
+	address *pb.Address,
+	items []*pb.CartItem,
+) (string, error) {
+	resp, err := pb.NewShippingServiceClient(cs.shippingSvcConn).
+		ShipOrder(ctx, &pb.ShipOrderRequest{
+			Address: address,
+			Items:   items})
 	if err != nil {
 		return "", fmt.Errorf("shipment failed: %+v", err)
 	}
