@@ -36,6 +36,6 @@ jobs:
       run: |
         SKAFFOLD_DEFAULT_REPO=ghcr.io/henrywhitakercommify \
         skaffold build \
-        --push=false \
+        --push=true \
         --filename='skaffold.yaml' \
         --build-concurrency=0
