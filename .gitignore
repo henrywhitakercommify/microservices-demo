@@ -9,7 +9,6 @@
 .terraform/*
 .venv/
 .vs/
-.vscode/
 *.iml
 *.ipr
 *.iws
