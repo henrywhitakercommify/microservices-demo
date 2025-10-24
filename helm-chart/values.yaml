@@ -16,6 +16,11 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+rollout:
+  previewReplicaCount: 1
+  autoPromotionEnabled: false
+  autoPromotionSeconds: 30
+
 images:
   #repository: us-central1-docker.pkg.dev/google-samples/microservices-demo
   repository: ghcr.io/henrywhitakercommify
@@ -116,8 +121,10 @@ emailService:
       memory: 128Mi
 
 frontend:
+  tag: v0.11.0
   create: true
   name: frontend
+  replicas: 5
   externalService: true
   cymbalBranding: false
   # One of: local, gcp, aws, azure, onprem, alibaba. When not set, defaults to "local" unless running in GKE, otherwise auto-sets to gcp.
