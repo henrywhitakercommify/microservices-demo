@@ -171,6 +171,6 @@ Find **Protocol Buffers Descriptions** at the [`./protos` directory](/protos).
 ## Demo
 
 - `minikube start`
-- `kubectl apply -f release/kuberenetes-manifests.yaml`
+- `kubectl apply -f release/kubernetes-manifests.yaml`
 - `kubectl port-forward service/frontend 8080:80`
 - `minikube delete`
