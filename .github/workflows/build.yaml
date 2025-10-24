@@ -31,9 +31,11 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Skaffold build local
+      # only build if tag
+      if: startsWith(github.ref, 'refs/tags/v')
       run: |
         SKAFFOLD_DEFAULT_REPO=ghcr.io/henrywhitakercommify \
         skaffold build \
-        --push=false \
-        --filename='skaffold.yaml' \
-        --build-concurrency=0
+          --push=true \
+          --filename='skaffold.yaml' \
+          --build-concurrency=0

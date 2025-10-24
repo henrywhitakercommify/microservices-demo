@@ -1,0 +1,83 @@
+{
+  // Helm-specific settings
+  "helm-intellisense.customValueFileNames": [
+    "values.yaml",
+    "values.yml",
+    "values-*.yaml",
+    "values-*.yml"
+  ],
+  
+  // YAML language server settings for Helm
+  "yaml.schemas": {
+    "kubernetes": [
+      "helm-chart/templates/*.yaml",
+      "helm-chart/templates/*.yml",
+      "kubernetes-manifests/*.yaml",
+      "kubernetes-manifests/*.yml"
+    ]
+  },
+  
+  // File associations for Helm templates
+  "files.associations": {
+    "**/helm-chart/templates/*.yaml": "helm",
+    "**/helm-chart/templates/*.yml": "helm",
+    "**/templates/*.yaml": "helm",
+    "**/templates/*.yml": "helm",
+    "values*.yaml": "yaml",
+    "values*.yml": "yaml"
+  },
+  
+  // YAML validation settings
+  "yaml.validate": true,
+  "yaml.hover": true,
+  "yaml.completion": true,
+  
+  // Kubernetes schema validation
+  "yaml.kubernetes.enabled": true,
+  
+  // Disable some validation for Helm templates to avoid false positives
+  "yaml.customTags": [
+    "!And",
+    "!Base64",
+    "!Cidr",
+    "!Condition",
+    "!Equals",
+    "!FindInMap",
+    "!GetAZs",
+    "!GetAtt",
+    "!If",
+    "!ImportValue",
+    "!Join",
+    "!Not",
+    "!Or",
+    "!Ref",
+    "!Select",
+    "!Split",
+    "!Sub"
+  ],
+  
+  // Editor settings for better Helm template editing
+  "editor.quickSuggestions": {
+    "strings": true
+  },
+  
+  // Formatter settings
+  "editor.defaultFormatter": "redhat.vscode-yaml",
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml",
+    "editor.quickSuggestions": {
+      "other": true,
+      "comments": false,
+      "strings": true
+    },
+    "editor.autoIndent": "advanced"
+  },
+  
+  "[helm]": {
+    "editor.quickSuggestions": {
+      "other": true,
+      "comments": false,
+      "strings": true
+    }
+  }
+}
