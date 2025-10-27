@@ -27,7 +27,7 @@ metadata:
   {{- end }}
 ---
 {{- end }}
-apiVersion: apps/v1
+apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
   name: {{ .Values.checkoutService.name }}
