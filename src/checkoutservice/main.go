@@ -17,6 +17,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"math/rand/v2"
 	"net"
 	"os"
 	"time"
@@ -236,9 +237,9 @@ func (cs *checkoutService) PlaceOrder(
 	ctx context.Context,
 	req *pb.PlaceOrderRequest,
 ) (*pb.PlaceOrderResponse, error) {
-	// if val := rand.IntN(100); val <= 5 {
-	// 	return nil, status.Errorf(codes.Unavailable, "simulated service unavailability for chaos testing")
-	// }
+	if val := rand.IntN(100); val <= 5 {
+		return nil, status.Errorf(codes.Unavailable, "simulated service unavailability for chaos testing")
+	}
 
 	log.Infof("[PlaceOrder] user_id=%q user_currency=%q", req.UserId, req.UserCurrency)
 
