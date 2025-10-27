@@ -114,7 +114,7 @@ spec:
           - name: COLLECTOR_SERVICE_ADDR
             value: "{{ .Values.tracing.endpoint }}"
           - name: OTEL_SERVICE_NAME
-            value: "{{ .Values.frontend.name }}"
+            value: "demo-{{ .Values.frontend.name }}"
           - name: ENABLE_TRACING
             value: "1"
           - name: OTEL_RESOURCE_ATTRIBUTES

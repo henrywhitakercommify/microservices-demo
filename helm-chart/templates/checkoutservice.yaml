@@ -97,7 +97,7 @@ spec:
         - name: COLLECTOR_SERVICE_ADDR
           value: "{{ .Values.tracing.endpoint }}"
         - name: OTEL_SERVICE_NAME
-          value: "{{ .Values.checkoutService.name }}"
+          value: "demo-{{ .Values.checkoutService.name }}"
         - name: ENABLE_TRACING
           value: "1"
         - name: OTEL_RESOURCE_ATTRIBUTES
