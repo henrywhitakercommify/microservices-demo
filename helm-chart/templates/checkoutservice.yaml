@@ -41,18 +41,18 @@ spec:
   replicas: {{ .Values.checkoutService.replicas }}
   strategy:
     canary:
-      canaryService: {{ .Values.checkoutService.name }}-preview
-      stableService: {{ .Values.checkoutService.name }}-stable
       canaryMetadata:
         annotations:
           role: canary
         labels:
           role: canary
+      canaryService: {{ .Values.checkoutService.name }}-preview
       stableMetadata:
         annotations:
           role: stable
         labels:
           role: stable
+      stableService: {{ .Values.checkoutService.name }}-stable
       maxUnavailable: 1
       maxSurge: 100%
       minPodsPerReplicaSet: 2
