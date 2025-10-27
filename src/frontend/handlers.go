@@ -430,6 +430,11 @@ func (fe *frontendServer) placeOrderHandler(w http.ResponseWriter, r *http.Reque
 	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
 	log.Debug("placing order")
 
+	if val := rand.Intn(100); val <= 5 {
+		renderHTTPError(log, r, w, fmt.Errorf("random fault"), http.StatusServiceUnavailable)
+		return
+	}
+
 	var (
 		email         = r.FormValue("email")
 		streetAddress = r.FormValue("street_address")
