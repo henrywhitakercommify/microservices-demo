@@ -1,4 +1,3 @@
-# Copyright 2024 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -110,13 +109,11 @@ spec:
             value: "{{ .Values.shoppingAssistantService.name }}:80"
           - name: ENV_PLATFORM
             value: {{ .Values.frontend.platform | quote }}
-          {{- if .Values.opentelemetryCollector.create }}
+          {{- if .Values.tracing.enabled }}
           - name: COLLECTOR_SERVICE_ADDR
-            value: "{{ .Values.opentelemetryCollector.name }}:4317"
+            value: "{{ .Values.tracing.endpoint }}"
           - name: OTEL_SERVICE_NAME
             value: "{{ .Values.frontend.name }}"
-          {{- end }}
-          {{- if .Values.googleCloudOperations.tracing }}
           - name: ENABLE_TRACING
             value: "1"
           {{- end }}

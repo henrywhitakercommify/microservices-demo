@@ -76,13 +76,11 @@ spec:
         env:
         - name: PORT
           value: "7000"
-        {{- if .Values.opentelemetryCollector.create }}
+        {{- if .Values.tracing.enabled }}
         - name: COLLECTOR_SERVICE_ADDR
-          value: "{{ .Values.opentelemetryCollector.name }}:4317"
+          value: "{{ .Values.tracing.endpoint }}"
         - name: OTEL_SERVICE_NAME
           value: "{{ .Values.currencyService.name }}"
-        {{- end }}
-        {{- if .Values.googleCloudOperations.tracing }}
         - name: ENABLE_TRACING
           value: "1"
         {{- end }}

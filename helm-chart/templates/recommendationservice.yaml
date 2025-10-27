@@ -85,13 +85,11 @@ spec:
           value: "8080"
         - name: PRODUCT_CATALOG_SERVICE_ADDR
           value: "{{ .Values.productCatalogService.name }}:3550"
-        {{- if .Values.opentelemetryCollector.create }}
+        {{- if .Values.tracing.enabled }}
         - name: COLLECTOR_SERVICE_ADDR
-          value: "{{ .Values.opentelemetryCollector.name }}:4317"
+          value: "{{ .Values.tracing.endpoint }}"
         - name: OTEL_SERVICE_NAME
           value: "{{ .Values.recommendationService.name }}"
-        {{- end }}
-        {{- if .Values.googleCloudOperations.tracing }}
         - name: ENABLE_TRACING
           value: "1"
         {{- end }}

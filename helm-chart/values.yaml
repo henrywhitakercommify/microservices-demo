@@ -42,6 +42,10 @@ authorizationPolicies:
   # Specifies if the AuthorizationPolicies are created or not. If true, one fine granular AuthorizationPolicy per app is created.
   create: false
 
+tracing:
+  enabled: false
+  endpoint: ""
+
 opentelemetryCollector:
   create: false
   name: opentelemetrycollector
@@ -126,7 +130,7 @@ frontend:
   virtualService:
     create: false
     hosts:
-    - "*"
+      - "*"
     gateway:
       name: asm-ingressgateway
       namespace: asm-ingress
