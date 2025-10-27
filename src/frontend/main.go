@@ -16,6 +16,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
@@ -55,6 +56,8 @@ var (
 	}
 
 	baseUrl         = ""
+
+	appVersion = "v0.0.0"
 )
 
 type ctxKeySessionID struct{}
@@ -109,6 +112,12 @@ func main() {
 
 	baseUrl = os.Getenv("BASE_URL")
 
+    appVersion = os.Getenv("APP_VERSION")
+    if appVersion == "" {
+        appVersion = "unknown"
+    }
+    log.Infof("Application version: %s", appVersion)
+
 	if os.Getenv("ENABLE_TRACING") == "1" {
 		log.Info("Tracing enabled.")
 		initTracing(log, ctx, svc)
@@ -160,6 +169,7 @@ func main() {
 	r.HandleFunc(baseUrl + "/_healthz", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "ok") })
 	r.HandleFunc(baseUrl + "/product-meta/{ids}", svc.getProductByID).Methods(http.MethodGet)
 	r.HandleFunc(baseUrl + "/bot", svc.chatBotHandler).Methods(http.MethodPost)
+	r.HandleFunc(baseUrl + "/version", versionHandler).Methods(http.MethodGet)
 
 	var handler http.Handler = r
 	handler = &logHandler{log: log, next: handler}     // add logging
@@ -232,4 +242,11 @@ func mustConnGRPC(ctx context.Context, conn **grpc.ClientConn, addr string) {
 	if err != nil {
 		panic(errors.Wrapf(err, "grpc: failed to connect %s", addr))
 	}
+}
+
+func versionHandler(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(map[string]string{
+        "version": appVersion,
+    })
 }
