@@ -34,7 +34,7 @@ metadata:
     app: {{ .Values.cartService.name }}
 spec:
   replicas: {{ .Values.cartService.replicas }}
-  revisionHistoryLimit: {{ .Values.rollout.revisionHistoryLimit }}
+  #revisionHistoryLimit: {{ .Values.rollout.revisionHistoryLimit }}
   selector:
     matchLabels:
       app: {{ .Values.cartService.name }}
