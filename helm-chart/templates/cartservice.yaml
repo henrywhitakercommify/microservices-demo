@@ -26,17 +26,46 @@ metadata:
 ---
 {{- end }}
 apiVersion: apps/v1
-kind: Deployment
+kind: Rollout
 metadata:
   name: {{ .Values.cartService.name }}
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ .Values.cartService.name }}
 spec:
+  replicas: {{ .Values.cartService.replicas }}
+  revisionHistoryLimit: {{ .Values.rollout.revisionHistoryLimit }}
   selector:
     matchLabels:
       app: {{ .Values.cartService.name }}
-  replicas: {{ .Values.cartService.replicas }}
+  strategy:
+    canary:
+      canaryService: {{ .Values.cartService.name }}-preview
+      stableService: {{ .Values.cartService.name }}-stable
+      canaryMetadata:
+        annotations:
+          role: canary
+        labels:
+          role: canary
+      stableMetadata:
+        annotations:
+          role: stable
+        labels:
+          role: stable
+      maxUnavailable: 1
+      maxSurge: 100%
+      minPodsPerReplicaSet: 2
+      steps:
+        - setWeight: 25
+        - pause:
+            duration: 15
+        - setWeight: 50
+        - pause:
+            duration: 15
+        - setWeight: 75
+        - pause:
+            duration: 15
+        - setWeight: 100
   template:
     metadata:
       {{- if .Values.cartDatabase.externalRedisTlsOrigination.enable }}
@@ -99,7 +128,23 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.cartService.name }}
+  name: {{ .Values.cartService.name }}-stable
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.cartService.name }}
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ .Values.cartService.name }}
+  ports:
+  - name: grpc
+    port: 7070
+    targetPort: 7070
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.cartService.name }}-preview
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ .Values.cartService.name }}
