@@ -38,6 +38,7 @@ spec:
   selector:
     matchLabels:
       app: {{ .Values.productCatalogService.name }}
+  replicas: {{ .Values.productCatalogService.replicas }}
   template:
     metadata:
       labels:

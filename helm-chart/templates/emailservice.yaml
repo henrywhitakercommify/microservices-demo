@@ -38,6 +38,7 @@ spec:
   selector:
     matchLabels:
       app: {{ .Values.emailService.name }}
+  replicas: {{ .Values.emailService.replicas }}
   template:
     metadata:
       labels:

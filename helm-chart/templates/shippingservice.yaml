@@ -38,6 +38,7 @@ spec:
   selector:
     matchLabels:
       app: {{ .Values.shippingService.name }}
+  replicas: {{ .Values.shippingService.replicas }}
   template:
     metadata:
       labels:

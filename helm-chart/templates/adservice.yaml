@@ -38,6 +38,7 @@ spec:
   selector:
     matchLabels:
       app: {{ .Values.adService.name }}
+  replicas: {{ .Values.adService.replicas }}
   template:
     metadata:
       labels:

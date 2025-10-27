@@ -37,6 +37,7 @@ spec:
   selector:
     matchLabels:
       app: {{ .Values.frontend.name }}
+  replicas: {{ .Values.frontend.replicas }}
   template:
     metadata:
       labels:

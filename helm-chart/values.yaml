@@ -66,6 +66,7 @@ securityContext:
 
 adService:
   create: true
+  replicas: 3
   name: adservice
   resources:
     requests:
@@ -77,6 +78,7 @@ adService:
 
 cartService:
   create: true
+  replicas: 3
   name: cartservice
   resources:
     requests:
@@ -88,6 +90,7 @@ cartService:
 
 checkoutService:
   create: true
+  replicas: 3
   name: checkoutservice
   resources:
     requests:
@@ -99,6 +102,7 @@ checkoutService:
 
 currencyService:
   create: true
+  replicas: 3
   name: currencyservice
   resources:
     requests:
@@ -110,6 +114,7 @@ currencyService:
 
 emailService:
   create: true
+  replicas: 3
   name: emailservice
   resources:
     requests:
@@ -121,6 +126,7 @@ emailService:
 
 frontend:
   create: true
+  replicas: 3
   name: frontend
   externalService: true
   cymbalBranding: false
@@ -158,6 +164,7 @@ loadGenerator:
 
 paymentService:
   create: true
+  replicas: 3
   name: paymentservice
   resources:
     requests:
@@ -169,6 +176,7 @@ paymentService:
 
 productCatalogService:
   create: true
+  replicas: 3
   name: productcatalogservice
   # Specifies an extra latency to any request on productcatalogservice, by default no extra latency.
   extraLatency: ""
@@ -182,6 +190,7 @@ productCatalogService:
 
 recommendationService:
   create: true
+  replicas: 3
   name: recommendationservice
   resources:
     requests:
@@ -193,6 +202,7 @@ recommendationService:
 
 shippingService:
   create: true
+  replicas: 3
   name: shippingservice
   resources:
     requests:

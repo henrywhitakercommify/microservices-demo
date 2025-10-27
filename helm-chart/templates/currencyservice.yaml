@@ -38,6 +38,7 @@ spec:
   selector:
     matchLabels:
       app: {{ .Values.currencyService.name }}
+  replicas: {{ .Values.currencyService.replicas }}
   template:
     metadata:
       labels:

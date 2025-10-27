@@ -38,6 +38,7 @@ spec:
   selector:
     matchLabels:
       app: {{ .Values.recommendationService.name }}
+  replicas: {{ .Values.recommendationService.replicas }}
   template:
     metadata:
       labels:
