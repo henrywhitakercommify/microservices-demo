@@ -43,7 +43,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          context: src/${{ matrix.name }}/${{ matrix.context || '' }}
+          context: src/${{ matrix.service.name }}/${{ matrix.service.context || '' }}
           tags: |
-            ghcr.io/henrywhitakercommify/microservices-demo/${{ matrix.name }}:latest
-            ghcr.io/henrywhitakercommify/microservices-demo/${{ matrix.name }}:${{ github.ref_name }}
+            ghcr.io/henrywhitakercommify/microservices-demo/${{ matrix.service.name }}:latest
+            ghcr.io/henrywhitakercommify/microservices-demo/${{ matrix.service.name }}:${{ github.ref_name }}
