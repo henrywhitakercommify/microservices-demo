@@ -100,6 +100,8 @@ spec:
           value: "{{ .Values.checkoutService.name }}"
         - name: ENABLE_TRACING
           value: "1"
+        - name: OTEL_RESOURCE_ATTRIBUTES
+          value: service.version={{ .Values.images.tag | default .Chart.AppVersion }}
         {{- end }}
         {{- if .Values.googleCloudOperations.profiler }}
         - name: ENABLE_PROFILER
