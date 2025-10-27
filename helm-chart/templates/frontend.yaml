@@ -26,8 +26,8 @@ metadata:
   {{- end }}
 ---
 {{- end }}
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
 metadata:
   name: {{ .Values.frontend.name }}
   namespace: {{ .Release.Namespace }}
@@ -38,6 +38,41 @@ spec:
     matchLabels:
       app: {{ .Values.frontend.name }}
   replicas: {{ .Values.frontend.replicas }}
+  revisionHistoryLimit: 3
+  strategy:
+    canary:
+      canaryMetadata:
+        annotations:
+          role: canary
+        labels:
+          role: canary
+      canaryService: {{ .Values.frontend.name }}-preview
+      stableMetadata:
+        annotations:
+          role: stable
+        labels:
+          role: stable
+      stableService: {{ .Values.frontend.name }}-stable
+      maxUnavailable: 1
+      maxSurge: 100%
+      steps:
+        - setWeight: 25
+        - pause:
+            duration: 15
+        - setWeight: 50
+        - pause:
+            duration: 15
+        - setWeight: 75
+        - pause:
+            duration: 15
+        - setWeight: 100
+      # traffic routing
+      trafficRouting:
+        nginx:
+          stableIngress: {{ .Values.frontend.name }}
+          additionalIngressAnnotations:
+            canary-by-header: X-Canary
+            canary-by-header-value: "true"
   template:
     metadata:
       labels:
@@ -136,7 +171,23 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.frontend.name }}
+  name: {{ .Values.frontend.name }}-stable
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.frontend.name }}
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ .Values.frontend.name }}
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.frontend.name }}-preview
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ .Values.frontend.name }}

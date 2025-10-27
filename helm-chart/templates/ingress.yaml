@@ -13,7 +13,7 @@ spec:
         paths:
           - backend:
               service:
-                name: "{{ .Values.frontend.name }}"
+                name: "{{ .Values.frontend.name }}-stable"
                 port:
                   number: 80
             path: /
