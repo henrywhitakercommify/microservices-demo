@@ -3,6 +3,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: "{{ .Values.frontend.name }}"
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   {{- if .Values.frontend.ingress.ingressClassName }}
   ingressClassName: "{{ .Values.frontend.ingress.ingressClassName }}"
@@ -13,7 +15,7 @@ spec:
         paths:
           - backend:
               service:
-                name: "{{ .Values.frontend.name }}"
+                name: "{{ .Values.frontend.name }}-stable"
                 port:
                   number: 80
             path: /
