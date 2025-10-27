@@ -56,6 +56,8 @@ var (
 	}
 
 	baseUrl         = ""
+
+	appVersion	  string
 )
 
 type ctxKeySessionID struct{}
@@ -110,7 +112,6 @@ func main() {
 
 	baseUrl = os.Getenv("BASE_URL")
 
-    var appVersion string
 	appVersion = os.Getenv("VERSION")
     if appVersion == "" {
         appVersion = "unknown"
