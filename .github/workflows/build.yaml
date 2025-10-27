@@ -45,5 +45,5 @@ jobs:
           push: true
           context: src/${{ matrix.service.name }}/${{ matrix.service.context || '' }}
           tags: |
-            ghcr.io/henrywhitakercommify/microservices-demo/${{ matrix.service.name }}:latest
-            ghcr.io/henrywhitakercommify/microservices-demo/${{ matrix.service.name }}:${{ github.ref_name }}
+            ghcr.io/henrywhitakercommify/${{ matrix.service.name }}:latest
+            ghcr.io/henrywhitakercommify/${{ matrix.service.name }}:${{ github.ref_name }}
