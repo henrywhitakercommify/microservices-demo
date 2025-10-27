@@ -150,6 +150,12 @@ frontend:
       cpu: 200m
       memory: 128Mi
 
+  ingress:
+    enabled: false
+    host: ""
+    annotations: {}
+    ingressClassName: ""
+
 loadGenerator:
   create: true
   name: loadgenerator
