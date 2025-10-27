@@ -39,6 +39,7 @@ spec:
     matchLabels:
       app: {{ .Values.checkoutService.name }}
   replicas: {{ .Values.checkoutService.replicas }}
+  revisionHistoryLimit: 3
   strategy:
     canary:
       canaryMetadata:
@@ -55,7 +56,7 @@ spec:
       stableService: {{ .Values.checkoutService.name }}-stable
       maxUnavailable: 1
       maxSurge: 100%
-      minPodsPerReplicaSet: 2
+      #minPodsPerReplicaSet: 2
       steps:
         - setWeight: 25
         - pause:
