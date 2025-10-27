@@ -39,6 +39,8 @@ spec:
       app: {{ .Values.frontend.name }}
   replicas: {{ .Values.frontend.replicas }}
   revisionHistoryLimit: 3
+  rollbackWindow:
+    revisions: 1
   strategy:
     canary:
       canaryMetadata:
