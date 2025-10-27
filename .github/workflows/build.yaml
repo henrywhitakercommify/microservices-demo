@@ -44,6 +44,8 @@ jobs:
         with:
           push: true
           context: src/${{ matrix.service.name }}/${{ matrix.service.context || '' }}
+          args: |
+            VERSION=${{ github.ref_name }}
           tags: |
             ghcr.io/henrywhitakercommify/${{ matrix.service.name }}:latest
             ghcr.io/henrywhitakercommify/${{ matrix.service.name }}:${{ github.ref_name }}
