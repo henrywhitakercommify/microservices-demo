@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"html/template"
 	"io"
+	"log"
 	"math/rand"
 	"net"
 	"net/http"
@@ -61,17 +62,35 @@ func (fe *frontendServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 	log.WithField("currency", currentCurrency(r)).Info("home")
 	currencies, err := fe.getCurrencies(r.Context())
 	if err != nil {
-		renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve currencies"), http.StatusInternalServerError)
+		renderHTTPError(
+			log,
+			r,
+			w,
+			errors.Wrap(err, "could not retrieve currencies"),
+			http.StatusInternalServerError,
+		)
 		return
 	}
 	products, err := fe.getProducts(r.Context())
 	if err != nil {
-		renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve products"), http.StatusInternalServerError)
+		renderHTTPError(
+			log,
+			r,
+			w,
+			errors.Wrap(err, "could not retrieve products"),
+			http.StatusInternalServerError,
+		)
 		return
 	}
 	cart, err := fe.getCart(r.Context(), sessionID(r))
 	if err != nil {
-		renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve cart"), http.StatusInternalServerError)
+		renderHTTPError(
+			log,
+			r,
+			w,
+			errors.Wrap(err, "could not retrieve cart"),
+			http.StatusInternalServerError,
+		)
 		return
 	}
 
@@ -83,7 +102,13 @@ func (fe *frontendServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 	for i, p := range products {
 		price, err := fe.convertCurrency(r.Context(), p.GetPriceUsd(), currentCurrency(r))
 		if err != nil {
-			renderHTTPError(log, r, w, errors.Wrapf(err, "failed to do currency conversion for product %s", p.GetId()), http.StatusInternalServerError)
+			renderHTTPError(
+				log,
+				r,
+				w,
+				errors.Wrapf(err, "failed to do currency conversion for product %s", p.GetId()),
+				http.StatusInternalServerError,
+			)
 			return
 		}
 		ps[i] = productView{p, price}
@@ -153,24 +178,48 @@ func (fe *frontendServer) productHandler(w http.ResponseWriter, r *http.Request)
 
 	p, err := fe.getProduct(r.Context(), id)
 	if err != nil {
-		renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve product"), http.StatusInternalServerError)
+		renderHTTPError(
+			log,
+			r,
+			w,
+			errors.Wrap(err, "could not retrieve product"),
+			http.StatusInternalServerError,
+		)
 		return
 	}
 	currencies, err := fe.getCurrencies(r.Context())
 	if err != nil {
-		renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve currencies"), http.StatusInternalServerError)
+		renderHTTPError(
+			log,
+			r,
+			w,
+			errors.Wrap(err, "could not retrieve currencies"),
+			http.StatusInternalServerError,
+		)
 		return
 	}
 
 	cart, err := fe.getCart(r.Context(), sessionID(r))
 	if err != nil {
-		renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve cart"), http.StatusInternalServerError)
+		renderHTTPError(
+			log,
+			r,
+			w,
+			errors.Wrap(err, "could not retrieve cart"),
+			http.StatusInternalServerError,
+		)
 		return
 	}
 
 	price, err := fe.convertCurrency(r.Context(), p.GetPriceUsd(), currentCurrency(r))
 	if err != nil {
-		renderHTTPError(log, r, w, errors.Wrap(err, "failed to convert currency"), http.StatusInternalServerError)
+		renderHTTPError(
+			log,
+			r,
+			w,
+			errors.Wrap(err, "failed to convert currency"),
+			http.StatusInternalServerError,
+		)
 		return
 	}
 
@@ -217,22 +266,42 @@ func (fe *frontendServer) addToCartHandler(w http.ResponseWriter, r *http.Reques
 		ProductID: productID,
 	}
 	if err := payload.Validate(); err != nil {
-		renderHTTPError(log, r, w, validator.ValidationErrorResponse(err), http.StatusUnprocessableEntity)
+		renderHTTPError(
+			log,
+			r,
+			w,
+			validator.ValidationErrorResponse(err),
+			http.StatusUnprocessableEntity,
+		)
 		return
 	}
-	log.WithField("product", payload.ProductID).WithField("quantity", payload.Quantity).Debug("adding to cart")
+	log.WithField("product", payload.ProductID).
+		WithField("quantity", payload.Quantity).
+		Debug("adding to cart")
 
 	p, err := fe.getProduct(r.Context(), payload.ProductID)
 	if err != nil {
-		renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve product"), http.StatusInternalServerError)
+		renderHTTPError(
+			log,
+			r,
+			w,
+			errors.Wrap(err, "could not retrieve product"),
+			http.StatusInternalServerError,
+		)
 		return
 	}
 
 	if err := fe.insertCart(r.Context(), sessionID(r), p.GetId(), int32(payload.Quantity)); err != nil {
-		renderHTTPError(log, r, w, errors.Wrap(err, "failed to add to cart"), http.StatusInternalServerError)
+		renderHTTPError(
+			log,
+			r,
+			w,
+			errors.Wrap(err, "failed to add to cart"),
+			http.StatusInternalServerError,
+		)
 		return
 	}
-	w.Header().Set("location", baseUrl + "/cart")
+	w.Header().Set("location", baseUrl+"/cart")
 	w.WriteHeader(http.StatusFound)
 }
 
@@ -241,10 +310,16 @@ func (fe *frontendServer) emptyCartHandler(w http.ResponseWriter, r *http.Reques
 	log.Debug("emptying cart")
 
 	if err := fe.emptyCart(r.Context(), sessionID(r)); err != nil {
-		renderHTTPError(log, r, w, errors.Wrap(err, "failed to empty cart"), http.StatusInternalServerError)
+		renderHTTPError(
+			log,
+			r,
+			w,
+			errors.Wrap(err, "failed to empty cart"),
+			http.StatusInternalServerError,
+		)
 		return
 	}
-	w.Header().Set("location", baseUrl + "/")
+	w.Header().Set("location", baseUrl+"/")
 	w.WriteHeader(http.StatusFound)
 }
 
@@ -253,12 +328,24 @@ func (fe *frontendServer) viewCartHandler(w http.ResponseWriter, r *http.Request
 	log.Debug("view user cart")
 	currencies, err := fe.getCurrencies(r.Context())
 	if err != nil {
-		renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve currencies"), http.StatusInternalServerError)
+		renderHTTPError(
+			log,
+			r,
+			w,
+			errors.Wrap(err, "could not retrieve currencies"),
+			http.StatusInternalServerError,
+		)
 		return
 	}
 	cart, err := fe.getCart(r.Context(), sessionID(r))
 	if err != nil {
-		renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve cart"), http.StatusInternalServerError)
+		renderHTTPError(
+			log,
+			r,
+			w,
+			errors.Wrap(err, "could not retrieve cart"),
+			http.StatusInternalServerError,
+		)
 		return
 	}
 
@@ -270,7 +357,13 @@ func (fe *frontendServer) viewCartHandler(w http.ResponseWriter, r *http.Request
 
 	shippingCost, err := fe.getShippingQuote(r.Context(), cart, currentCurrency(r))
 	if err != nil {
-		renderHTTPError(log, r, w, errors.Wrap(err, "failed to get shipping quote"), http.StatusInternalServerError)
+		renderHTTPError(
+			log,
+			r,
+			w,
+			errors.Wrap(err, "failed to get shipping quote"),
+			http.StatusInternalServerError,
+		)
 		return
 	}
 
@@ -284,12 +377,28 @@ func (fe *frontendServer) viewCartHandler(w http.ResponseWriter, r *http.Request
 	for i, item := range cart {
 		p, err := fe.getProduct(r.Context(), item.GetProductId())
 		if err != nil {
-			renderHTTPError(log, r, w, errors.Wrapf(err, "could not retrieve product #%s", item.GetProductId()), http.StatusInternalServerError)
+			renderHTTPError(
+				log,
+				r,
+				w,
+				errors.Wrapf(err, "could not retrieve product #%s", item.GetProductId()),
+				http.StatusInternalServerError,
+			)
 			return
 		}
 		price, err := fe.convertCurrency(r.Context(), p.GetPriceUsd(), currentCurrency(r))
 		if err != nil {
-			renderHTTPError(log, r, w, errors.Wrapf(err, "could not convert currency for product #%s", item.GetProductId()), http.StatusInternalServerError)
+			renderHTTPError(
+				log,
+				r,
+				w,
+				errors.Wrapf(
+					err,
+					"could not convert currency for product #%s",
+					item.GetProductId(),
+				),
+				http.StatusInternalServerError,
+			)
 			return
 		}
 
@@ -347,7 +456,13 @@ func (fe *frontendServer) placeOrderHandler(w http.ResponseWriter, r *http.Reque
 		CcCVV:         ccCVV,
 	}
 	if err := payload.Validate(); err != nil {
-		renderHTTPError(log, r, w, validator.ValidationErrorResponse(err), http.StatusUnprocessableEntity)
+		renderHTTPError(
+			log,
+			r,
+			w,
+			validator.ValidationErrorResponse(err),
+			http.StatusUnprocessableEntity,
+		)
 		return
 	}
 
@@ -369,7 +484,13 @@ func (fe *frontendServer) placeOrderHandler(w http.ResponseWriter, r *http.Reque
 				Country:       payload.Country},
 		})
 	if err != nil {
-		renderHTTPError(log, r, w, errors.Wrap(err, "failed to complete the order"), http.StatusInternalServerError)
+		renderHTTPError(
+			log,
+			r,
+			w,
+			errors.Wrap(err, "failed to complete the order"),
+			http.StatusInternalServerError,
+		)
 		return
 	}
 	log.WithField("order", order.GetOrder().GetOrderId()).Info("order placed")
@@ -385,7 +506,13 @@ func (fe *frontendServer) placeOrderHandler(w http.ResponseWriter, r *http.Reque
 
 	currencies, err := fe.getCurrencies(r.Context())
 	if err != nil {
-		renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve currencies"), http.StatusInternalServerError)
+		renderHTTPError(
+			log,
+			r,
+			w,
+			errors.Wrap(err, "could not retrieve currencies"),
+			http.StatusInternalServerError,
+		)
 		return
 	}
 
@@ -403,7 +530,13 @@ func (fe *frontendServer) placeOrderHandler(w http.ResponseWriter, r *http.Reque
 func (fe *frontendServer) assistantHandler(w http.ResponseWriter, r *http.Request) {
 	currencies, err := fe.getCurrencies(r.Context())
 	if err != nil {
-		renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve currencies"), http.StatusInternalServerError)
+		renderHTTPError(
+			log,
+			r,
+			w,
+			errors.Wrap(err, "could not retrieve currencies"),
+			http.StatusInternalServerError,
+		)
 		return
 	}
 
@@ -423,7 +556,7 @@ func (fe *frontendServer) logoutHandler(w http.ResponseWriter, r *http.Request) 
 		c.MaxAge = -1
 		http.SetCookie(w, c)
 	}
-	w.Header().Set("Location", baseUrl + "/")
+	w.Header().Set("Location", baseUrl+"/")
 	w.WriteHeader(http.StatusFound)
 }
 
@@ -464,20 +597,38 @@ func (fe *frontendServer) chatBotHandler(w http.ResponseWriter, r *http.Request)
 	url := "http://" + fe.shoppingAssistantSvcAddr
 	req, err := http.NewRequest(http.MethodPost, url, r.Body)
 	if err != nil {
-		renderHTTPError(log, r, w, errors.Wrap(err, "failed to create request"), http.StatusInternalServerError)
+		renderHTTPError(
+			log,
+			r,
+			w,
+			errors.Wrap(err, "failed to create request"),
+			http.StatusInternalServerError,
+		)
 		return
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept", "application/json")
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		renderHTTPError(log, r, w, errors.Wrap(err, "failed to send request"), http.StatusInternalServerError)
+		renderHTTPError(
+			log,
+			r,
+			w,
+			errors.Wrap(err, "failed to send request"),
+			http.StatusInternalServerError,
+		)
 		return
 	}
 
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
-		renderHTTPError(log, r, w, errors.Wrap(err, "failed to read response"), http.StatusInternalServerError)
+		renderHTTPError(
+			log,
+			r,
+			w,
+			errors.Wrap(err, "failed to read response"),
+			http.StatusInternalServerError,
+		)
 		return
 	}
 
@@ -486,7 +637,13 @@ func (fe *frontendServer) chatBotHandler(w http.ResponseWriter, r *http.Request)
 
 	err = json.Unmarshal(body, &response)
 	if err != nil {
-		renderHTTPError(log, r, w, errors.Wrap(err, "failed to unmarshal body"), http.StatusInternalServerError)
+		renderHTTPError(
+			log,
+			r,
+			w,
+			errors.Wrap(err, "failed to unmarshal body"),
+			http.StatusInternalServerError,
+		)
 		return
 	}
 
@@ -501,7 +658,13 @@ func (fe *frontendServer) setCurrencyHandler(w http.ResponseWriter, r *http.Requ
 	cur := r.FormValue("currency_code")
 	payload := validator.SetCurrencyPayload{Currency: cur}
 	if err := payload.Validate(); err != nil {
-		renderHTTPError(log, r, w, validator.ValidationErrorResponse(err), http.StatusUnprocessableEntity)
+		renderHTTPError(
+			log,
+			r,
+			w,
+			validator.ValidationErrorResponse(err),
+			http.StatusUnprocessableEntity,
+		)
 		return
 	}
 	log.WithField("curr.new", payload.Currency).WithField("curr.old", currentCurrency(r)).
@@ -524,7 +687,11 @@ func (fe *frontendServer) setCurrencyHandler(w http.ResponseWriter, r *http.Requ
 
 // chooseAd queries for advertisements available and randomly chooses one, if
 // available. It ignores the error retrieving the ad since it is not critical.
-func (fe *frontendServer) chooseAd(ctx context.Context, ctxKeys []string, log logrus.FieldLogger) *pb.Ad {
+func (fe *frontendServer) chooseAd(
+	ctx context.Context,
+	ctxKeys []string,
+	log logrus.FieldLogger,
+) *pb.Ad {
 	ads, err := fe.getAd(ctx, ctxKeys)
 	if err != nil {
 		log.WithField("error", err).Warn("failed to retrieve ads")
@@ -533,7 +700,13 @@ func (fe *frontendServer) chooseAd(ctx context.Context, ctxKeys []string, log lo
 	return ads[rand.Intn(len(ads))]
 }
 
-func renderHTTPError(log logrus.FieldLogger, r *http.Request, w http.ResponseWriter, err error, code int) {
+func renderHTTPError(
+	log logrus.FieldLogger,
+	r *http.Request,
+	w http.ResponseWriter,
+	err error,
+	code int,
+) {
 	log.WithField("error", err).Error("request error")
 	errMsg := fmt.Sprintf("%+v", err)
 
@@ -548,7 +721,10 @@ func renderHTTPError(log logrus.FieldLogger, r *http.Request, w http.ResponseWri
 	}
 }
 
-func injectCommonTemplateData(r *http.Request, payload map[string]interface{}) map[string]interface{} {
+func injectCommonTemplateData(
+	r *http.Request,
+	payload map[string]interface{},
+) map[string]interface{} {
 	data := map[string]interface{}{
 		"session_id":        sessionID(r),
 		"request_id":        r.Context().Value(ctxKeyRequestID{}),
