@@ -112,7 +112,7 @@ func main() {
 
 	baseUrl = os.Getenv("BASE_URL")
 
-    appVersion = os.Getenv("APP_VERSION")
+    appVersion = os.Getenv("VERSION")
     if appVersion == "" {
         appVersion = "unknown"
     }
