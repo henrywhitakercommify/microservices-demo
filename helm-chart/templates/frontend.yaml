@@ -153,6 +153,9 @@ spec:
             value: "1"
           - name: OTEL_RESOURCE_ATTRIBUTES
             value: service.version={{ .Values.images.tag | default .Chart.AppVersion }}
+          - name: VERSION
+            value: {{ .Values.images.tag | default .Chart.AppVersion | quote }}
+          {{- else }}
           {{- end }}
           {{- if .Values.googleCloudOperations.profiler }}
           - name: ENABLE_PROFILER
