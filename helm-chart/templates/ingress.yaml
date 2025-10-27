@@ -4,7 +4,7 @@ kind: Ingress
 metadata:
   name: "{{ .Values.frontend.name }}"
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/rewrite-target: {{ .Values.frontend.ingress.rewriteTarget | default "/" | quote }}
 spec:
   {{- if .Values.frontend.ingress.ingressClassName }}
   ingressClassName: "{{ .Values.frontend.ingress.ingressClassName }}"

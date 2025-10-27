@@ -54,7 +54,7 @@ spec:
           role: stable
       stableService: {{ .Values.frontend.name }}-stable
       maxUnavailable: 1
-      maxSurge: 100%
+      maxSurge: 25%
       steps:
         - setWeight: 25
         - pause:
