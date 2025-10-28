@@ -189,9 +189,9 @@ spec:
             name: datadog-secrets
           interval: 30s
           queries:
-            a: default_zero(sum:trace.http.server.request.hits.by_http_status{service:demo-frontend , http.status_code:5*}.as_rate())
+            a: sum:trace.http.server.request.hits.by_http_status{service:demo-frontend , http.status_code:5*}.as_rate()
             b: sum:trace.http.server.request.hits.by_http_status{service:demo-frontend}.as_rate()
-          formula: b / a * 100
+          formula: default_zero(b) / a * 100
 ---
 apiVersion: v1
 kind: Service
