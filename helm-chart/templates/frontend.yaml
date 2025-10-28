@@ -67,6 +67,9 @@ spec:
       steps:
         {{- . | toYaml | nindent 8 }}
       {{- end }}
+      analysis:
+        templates:
+          - templateName: "{{ .Values.frontend.name }}-error-rate"
       trafficRouting:
         nginx:
           stableIngress: {{ .Values.frontend.name }}
@@ -175,7 +178,7 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: AnalysisTemplate
 metadata:
-  name: frontend-error-rate
+  name: "{{ .Values.frontend.name }}-error-rate"
 spec:
   args:
     - name: frontend
