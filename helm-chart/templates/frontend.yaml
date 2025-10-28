@@ -190,7 +190,7 @@ spec:
           apiVersion: v2
           secretRef:
             name: datadog-secrets
-          interval: 30s
+          interval: 90s
           queries:
             a: sum:trace.http.server.request.hits.by_http_status{service:demo-frontend , http.status_code:5*}.as_rate()
             b: sum:trace.http.server.request.hits.by_http_status{service:demo-frontend}.as_rate()
