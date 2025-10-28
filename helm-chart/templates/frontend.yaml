@@ -47,10 +47,12 @@ spec:
     revisions: 1
   strategy:
     canary:
+      {{- if .Values.frontend.rollout.analysis.enabled }}
       analysis:
         templates:
           - templateName: "{{ .Values.frontend.name }}-error-rate"
         startingStep: 1
+      {{- end }}
       canaryMetadata:
         annotations:
           role: canary
