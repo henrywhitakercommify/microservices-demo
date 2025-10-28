@@ -46,7 +46,7 @@ spec:
     canary:
       analysis:
         templates:
-        - templateName: frontend-error-rate
+          - templateName: "{{ .Values.frontend.name }}-error-rate"
         startingStep: 1
       canaryMetadata:
         annotations:
@@ -67,9 +67,6 @@ spec:
       steps:
         {{- . | toYaml | nindent 8 }}
       {{- end }}
-      analysis:
-        templates:
-          - templateName: "{{ .Values.frontend.name }}-error-rate"
       trafficRouting:
         nginx:
           stableIngress: {{ .Values.frontend.name }}
@@ -180,8 +177,6 @@ kind: AnalysisTemplate
 metadata:
   name: "{{ .Values.frontend.name }}-error-rate"
 spec:
-  args:
-    - name: frontend
   metrics:
     - name: error-rate
       interval: 30s
