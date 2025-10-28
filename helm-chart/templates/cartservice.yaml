@@ -47,6 +47,9 @@ spec:
       {{- end }}
       labels:
         app: {{ .Values.cartService.name }}
+        admission.datadoghq.com/enabled: "true"
+        tags.datadoghq.com/service: "demo-{{ .Values.cartService.name }}"
+        tags.datadoghq.com/version: "{{ .Values.images.tag | default .Chart.AppVersion }}"
     spec:
       {{- if .Values.serviceAccounts.create }}
       serviceAccountName: {{ .Values.cartService.name }}
