@@ -44,6 +44,9 @@ spec:
     revisions: 1
   strategy:
     canary:
+      analysis:
+        templates: frontend-error-rate
+      startingStep: 1
       canaryMetadata:
         annotations:
           role: canary
