@@ -48,8 +48,6 @@ spec:
         templates:
           - templateName: "{{ .Values.frontend.name }}-error-rate"
         startingStep: 1
-        successfulRunHistoryLimit: 3
-        unsuccessfulRunHistoryLimit: 3
       canaryMetadata:
         annotations:
           role: canary
