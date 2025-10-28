@@ -134,6 +134,8 @@ frontend:
   platform: local
   singleSharedSession: false
   rollout:
+    analysis:
+      enabled: true
     steps:
       - setWeight: 25
       - pause: {}
