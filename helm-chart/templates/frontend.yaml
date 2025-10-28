@@ -39,6 +39,9 @@ spec:
     matchLabels:
       app: {{ .Values.frontend.name }}
   replicas: {{ .Values.frontend.replicas }}
+  analysis:
+    successfulRunHistoryLimit: 3
+    unsuccessfulRunHistoryLimit: 3
   revisionHistoryLimit: 3
   rollbackWindow:
     revisions: 1
