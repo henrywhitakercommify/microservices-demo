@@ -55,6 +55,7 @@ spec:
         labels:
           role: stable
       stableService: {{ .Values.frontend.name }}-stable
+      scaleDownDelaySeconds: 10
       maxUnavailable: 1
       maxSurge: 25%
       steps:
