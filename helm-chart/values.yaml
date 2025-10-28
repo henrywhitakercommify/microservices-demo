@@ -133,6 +133,18 @@ frontend:
   # One of: local, gcp, aws, azure, onprem, alibaba. When not set, defaults to "local" unless running in GKE, otherwise auto-sets to gcp.
   platform: local
   singleSharedSession: false
+  rollout:
+    steps:
+      - setWeight: 25
+      - pause: {}
+          #duration: 15
+      - setWeight: 50
+      - pause:
+          duration: 15
+      - setWeight: 75
+      - pause:
+          duration: 15
+      - setWeight: 100
   virtualService:
     create: false
     hosts:

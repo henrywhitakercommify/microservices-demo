@@ -26,6 +26,7 @@ metadata:
   {{- end }}
 ---
 {{- end }}
+# yaml-language-server: $schema=https://github.com/datreeio/CRDs-catalog/raw/refs/heads/main/argoproj.io/rollout_v1alpha1.json
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
@@ -58,17 +59,10 @@ spec:
       scaleDownDelaySeconds: 10
       maxUnavailable: 1
       maxSurge: 25%
+      {{- with .Values.frontend.rollout.steps }}
       steps:
-        - setWeight: 25
-        - pause: {}
-            #duration: 15
-        - setWeight: 50
-        - pause:
-            duration: 15
-        - setWeight: 75
-        - pause:
-            duration: 15
-        - setWeight: 100
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}
       trafficRouting:
         nginx:
           stableIngress: {{ .Values.frontend.name }}
