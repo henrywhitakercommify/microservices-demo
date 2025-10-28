@@ -429,10 +429,10 @@ func (fe *frontendServer) placeOrderHandler(w http.ResponseWriter, r *http.Reque
 	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
 	log.Debug("placing order")
 
-	if val := rand.Intn(100); val <= 5 {
-		renderHTTPError(log, r, w, fmt.Errorf("random fault"), http.StatusServiceUnavailable)
-		return
-	}
+	// if val := rand.Intn(100); val <= 5 {
+	// 	renderHTTPError(log, r, w, fmt.Errorf("random fault"), http.StatusServiceUnavailable)
+	// 	return
+	// }
 
 	var (
 		email         = r.FormValue("email")
@@ -690,10 +690,10 @@ func (fe *frontendServer) setCurrencyHandler(w http.ResponseWriter, r *http.Requ
 }
 
 func (fe *frontendServer) versionHandler(w http.ResponseWriter, r *http.Request) {
-    w.Header().Set("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(map[string]string{
-        "version": appVersion,
-    })
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{
+		"version": appVersion,
+	})
 }
 
 // chooseAd queries for advertisements available and randomly chooses one, if
@@ -820,4 +820,3 @@ func stringinSlice(slice []string, val string) bool {
 	}
 	return false
 }
-
