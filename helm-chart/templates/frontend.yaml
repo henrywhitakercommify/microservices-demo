@@ -167,6 +167,26 @@ spec:
           resources:
             {{- toYaml .Values.frontend.resources | nindent 12 }}
 ---
+# yaml-language-server: $schema=https://github.com/datreeio/CRDs-catalog/raw/refs/heads/main/argoproj.io/analysistemplate_v1alpha1.json
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: frontend-error-rate
+spec:
+  args:
+  - name: frontend
+  metrics:
+  - name: error-rate
+    interval: 5m
+    successCondition: result <= 0.01
+    failureLimit: 3
+    provider:
+      datadog:
+        apiVersion: v2
+        interval: 5m
+        query: |
+          sum:requests.error.rate{service:{{args.service-name}}}
+---
 apiVersion: v1
 kind: Service
 metadata:
