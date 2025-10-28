@@ -689,6 +689,13 @@ func (fe *frontendServer) setCurrencyHandler(w http.ResponseWriter, r *http.Requ
 	w.WriteHeader(http.StatusFound)
 }
 
+func (fe *frontendServer) versionHandler(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(map[string]string{
+        "version": appVersion,
+    })
+}
+
 // chooseAd queries for advertisements available and randomly chooses one, if
 // available. It ignores the error retrieving the ad since it is not critical.
 func (fe *frontendServer) chooseAd(
@@ -813,3 +820,4 @@ func stringinSlice(slice []string, val string) bool {
 	}
 	return false
 }
+
