@@ -64,6 +64,11 @@ seccompProfile:
 securityContext:
   enable: true
 
+autoscaling:
+  targetCPUUtilizationPercentage: 75
+  targetMemoryUtilizationPercentage: 75
+  maxReplicas: 10
+
 adService:
   create: true
   replicas: 2
