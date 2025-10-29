@@ -78,7 +78,6 @@ adService:
       cpu: 200m
       memory: 180Mi
     limits:
-      cpu: 300m
       memory: 300Mi
 
 cartService:
@@ -90,7 +89,6 @@ cartService:
       cpu: 200m
       memory: 128Mi
     limits:
-      cpu: 300m
       memory: 256Mi
 
 checkoutService:
@@ -102,7 +100,6 @@ checkoutService:
       cpu: 100m
       memory: 64Mi
     limits:
-      cpu: 200m
       memory: 128Mi
 
 currencyService:
@@ -114,7 +111,6 @@ currencyService:
       cpu: 100m
       memory: 128Mi
     limits:
-      cpu: 200m
       memory: 256Mi
 
 emailService:
@@ -126,7 +122,6 @@ emailService:
       cpu: 100m
       memory: 64Mi
     limits:
-      cpu: 200m
       memory: 128Mi
 
 frontend:
@@ -166,7 +161,6 @@ frontend:
       cpu: 100m
       memory: 64Mi
     limits:
-      cpu: 200m
       memory: 128Mi
 
   ingress:
@@ -184,7 +178,6 @@ loadGenerator:
       cpu: 300m
       memory: 256Mi
     limits:
-      cpu: 500m
       memory: 512Mi
 
 paymentService:
@@ -196,7 +189,6 @@ paymentService:
       cpu: 100m
       memory: 128Mi
     limits:
-      cpu: 200m
       memory: 256Mi
 
 productCatalogService:
@@ -210,7 +202,6 @@ productCatalogService:
       cpu: 100m
       memory: 64Mi
     limits:
-      cpu: 200m
       memory: 128Mi
 
 recommendationService:
@@ -222,7 +213,6 @@ recommendationService:
       cpu: 100m
       memory: 220Mi
     limits:
-      cpu: 200m
       memory: 450Mi
 
 shippingService:
@@ -234,7 +224,6 @@ shippingService:
       cpu: 100m
       memory: 64Mi
     limits:
-      cpu: 200m
       memory: 128Mi
 
 cartDatabase:
