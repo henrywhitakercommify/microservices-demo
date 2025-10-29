@@ -371,7 +371,6 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ .Values.frontend.name }}
-  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ .Values.frontend.name }}
 spec:
@@ -380,20 +379,20 @@ spec:
     kind: Rollout
     name: {{ .Values.frontend.name }}
   minReplicas: {{ .Values.frontend.replicas | default 2 }}
-  maxReplicas: {{ .Values.autoscaling.maxReplicas | default 10 }}
+  maxReplicas: {{ .Values.frontend.autoscaling.maxReplicas | default 10 }}
   metrics:
   - type: Resource
     resource:
       name: cpu
       target:
         type: Utilization
-        averageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage | default 70 }}
+        averageUtilization: {{ .Values.frontend.autoscaling.targetCPUUtilizationPercentage | default 70 }}
   - type: Resource
     resource:
       name: memory
       target:
         type: Utilization
-        averageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage | default 80 }}
+        averageUtilization: {{ .Values.frontend.autoscaling.targetMemoryUtilizationPercentage | default 80 }}
   behavior:
     scaleDown:
       stabilizationWindowSeconds: 300
