@@ -38,7 +38,9 @@ spec:
   selector:
     matchLabels:
       app: {{ .Values.frontend.name }}
+  {{- if not .Values.frontend.autoscaling.enabled }}
   replicas: {{ .Values.frontend.replicas }}
+  {{- end }}
   analysis:
     successfulRunHistoryLimit: 3
     unsuccessfulRunHistoryLimit: 3
@@ -363,6 +365,7 @@ spec:
         port:
           number: 80
 {{- end }}
+{{- if. Values.frontend.autoscaling.enabled }}
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
@@ -408,4 +411,5 @@ spec:
         value: 4
         periodSeconds: 15
       selectPolicy: Max
+{{- end }}
 {{- end }}

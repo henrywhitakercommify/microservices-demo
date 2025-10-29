@@ -64,11 +64,6 @@ seccompProfile:
 securityContext:
   enable: true
 
-autoscaling:
-  targetCPUUtilizationPercentage: 75
-  targetMemoryUtilizationPercentage: 75
-  maxReplicas: 10
-
 adService:
   create: true
   replicas: 2
@@ -133,6 +128,11 @@ frontend:
   # One of: local, gcp, aws, azure, onprem, alibaba. When not set, defaults to "local" unless running in GKE, otherwise auto-sets to gcp.
   platform: local
   singleSharedSession: false
+  autoscaling:
+    enabled: true
+    targetCPUUtilizationPercentage: 75
+    targetMemoryUtilizationPercentage: 75
+    maxReplicas: 10
   rollout:
     analysis:
       enabled: true
