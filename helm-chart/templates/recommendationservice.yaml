@@ -38,7 +38,9 @@ spec:
   selector:
     matchLabels:
       app: {{ .Values.recommendationService.name }}
+  {{- if not .Values.recommendationService.autoscaling.enabled }}
   replicas: {{ .Values.recommendationService.replicas }}
+  {{- end }}
   template:
     metadata:
       labels:
@@ -190,5 +192,29 @@ spec:
         - POST
         ports:
         - "8080"
+{{- end }}
+{{- if .Values.recommendationService.autoscaling.enabled }}
+---
+# yaml-language-server: $schema=https://github.com/datreeio/CRDs-catalog/raw/refs/heads/main/keda.sh/scaledobject_v1alpha1.json
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: "{{ .Values.recommendationService.name }}"
+spec:
+  scaleTargetRef:
+    name: "{{ .Values.recommendationService.name }}"
+  minReplicaCount: {{ .Values.recommendationService.replicas }}
+  maxReplicaCount: {{ .Values.recommendationService.autoscaling.maxReplicas }}
+  triggers:
+    - type: datadog
+      metricType: AverageValue
+      metadata:
+        useClusterAgentProxy: "false"
+        query: "{{ .Values.recommendationService.autoscaling.query }}"
+        queryValue: "{{ .Values.recommendationService.autoscaling.queryValue }}"
+        metricUnavailableValue: "{{ .Values.recommendationService.autoscaling.metricUnavailable }}"
+        timeout: "10s"
+      authenticationRef:
+        name: datadog-trigger-auth
 {{- end }}
 {{- end }}

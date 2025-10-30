@@ -227,6 +227,12 @@ recommendationService:
   create: true
   replicas: 2
   name: recommendationservice
+  autoscaling:
+    enabled: true
+    maxReplicas: 5
+    query: "sum:trace.grpc.server.request.hits{service:demo-recommendationservice}.as_rate().rollup(sum, 5)"
+    queryValue: 50
+    metricUnavailable: 0
   resources:
     requests:
       cpu: 100m
