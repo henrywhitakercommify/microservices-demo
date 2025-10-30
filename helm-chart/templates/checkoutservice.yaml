@@ -38,7 +38,9 @@ spec:
   selector:
     matchLabels:
       app: {{ .Values.checkoutService.name }}
+  {{- if not .Values.checkoutService.autoscaling.enabled }}
   replicas: {{ .Values.checkoutService.replicas }}
+  {{- end }}
   template:
     metadata:
       labels:

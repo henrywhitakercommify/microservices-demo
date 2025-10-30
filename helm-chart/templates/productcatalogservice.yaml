@@ -38,7 +38,9 @@ spec:
   selector:
     matchLabels:
       app: {{ .Values.productCatalogService.name }}
+  {{- if not .Values.productCatalogService.autoscaling.enabled }}
   replicas: {{ .Values.productCatalogService.replicas }}
+  {{- end }}
   template:
     metadata:
       labels:
