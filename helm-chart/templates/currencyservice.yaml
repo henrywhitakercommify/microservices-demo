@@ -38,7 +38,9 @@ spec:
   selector:
     matchLabels:
       app: {{ .Values.currencyService.name }}
+  {{- if not .Values.currencyService.autoscaling.enabled }}
   replicas: {{ .Values.currencyService.replicas }}
+  {{- end }}
   template:
     metadata:
       labels:
@@ -191,5 +193,29 @@ spec:
         - POST
         ports:
         - "7000"
+{{- end }}
+{{- if .Values.currencyService.autoscaling.enabled }}
+---
+# yaml-language-server: $schema=https://github.com/datreeio/CRDs-catalog/raw/refs/heads/main/keda.sh/scaledobject_v1alpha1.json
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: "{{ .Values.currencyService.name }}"
+spec:
+  scaleTargetRef:
+    name: "{{ .Values.currencyService.name }}"
+  minReplicaCount: {{ .Values.currencyService.replicas }}
+  maxReplicaCount: {{ .Values.currencyService.autoscaling.maxReplicas }}
+  triggers:
+    - type: datadog
+      metricType: AverageValue
+      metadata:
+        useClusterAgentProxy: "false"
+        query: "{{ .Values.currencyService.autoscaling.query }}"
+        queryValue: "{{ .Values.currencyService.autoscaling.queryValue }}"
+        metricUnavailableValue: "{{ .Values.currencyService.autoscaling.metricUnavailable }}"
+        timeout: "10s"
+      authenticationRef:
+        name: datadog-trigger-auth
 {{- end }}
 {{- end }}
