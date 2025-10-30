@@ -383,6 +383,7 @@ spec:
     - type: datadog
       metricType: AverageValue
       metadata:
+        useClusterAgentProxy: "false"
         query: "{{ .Values.frontend.autoscaling.query }}"
         queryValue: "{{ .Values.frontend.autoscaling.queryValue }}"
         metricUnavailableValue: "{{ .Values.frontend.autoscaling.metricUnavailable }}"
