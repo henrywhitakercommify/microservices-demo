@@ -136,21 +136,21 @@ spec:
           - name: PORT
             value: "8080"
           - name: PRODUCT_CATALOG_SERVICE_ADDR
-            value: "{{ .Values.productCatalogService.name }}:3550"
+            value: "kubernetes:///{{ .Values.productCatalogService.name }}.{{ .Release.Namespace }}:3550"
           - name: CURRENCY_SERVICE_ADDR
-            value: "{{ .Values.currencyService.name }}:7000"
+            value: "kubernetes:///{{ .Values.currencyService.name }}.{{ .Release.Namespace }}:7000"
           - name: CART_SERVICE_ADDR
-            value: "{{ .Values.cartService.name }}:7070"
+            value: "kubernetes:///{{ .Values.cartService.name }}.{{ .Release.Namespace }}:7070"
           - name: RECOMMENDATION_SERVICE_ADDR
-            value: "{{ .Values.recommendationService.name }}:8080"
+            value: "kubernetes:///{{ .Values.recommendationService.name }}.{{ .Release.Namespace }}:8080"
           - name: SHIPPING_SERVICE_ADDR
-            value: "{{ .Values.shippingService.name }}:50051"
+            value: "kubernetes:///{{ .Values.shippingService.name }}.{{ .Release.Namespace }}:50051"
           - name: CHECKOUT_SERVICE_ADDR
-            value: "{{ .Values.checkoutService.name }}:5050"
+            value: "kubernetes:///{{ .Values.checkoutService.name }}.{{ .Release.Namespace }}:5050"
           - name: AD_SERVICE_ADDR
-            value: "{{ .Values.adService.name }}:9555"
+            value: "kubernetes:///{{ .Values.adService.name }}.{{ .Release.Namespace }}:9555"
           - name: SHOPPING_ASSISTANT_SERVICE_ADDR
-            value: "{{ .Values.shoppingAssistantService.name }}:80"
+            value: "kubernetes:///{{ .Values.shoppingAssistantService.name }}.{{ .Release.Namespace }}:80"
           - name: ENV_PLATFORM
             value: {{ .Values.frontend.platform | quote }}
           {{- if .Values.tracing.enabled }}
