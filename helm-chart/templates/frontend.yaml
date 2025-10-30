@@ -367,48 +367,27 @@ spec:
 {{- end }}
 {{- if .Values.frontend.autoscaling.enabled }}
 ---
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
+# yaml-language-server: $schema=https://github.com/datreeio/CRDs-catalog/raw/refs/heads/main/keda.sh/scaledobject_v1alpha1.json
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
 metadata:
-  name: {{ .Values.frontend.name }}
-  labels:
-    app: {{ .Values.frontend.name }}
+  name: "{{ .Values.frontend.name }}"
 spec:
   scaleTargetRef:
-    apiVersion: argoproj.io/v1alpha1
+    name: "{{ .Values.frontend.name }}"
+    apiVersion: v1beta1
     kind: Rollout
-    name: {{ .Values.frontend.name }}
-  minReplicas: {{ .Values.frontend.replicas | default 2 }}
-  maxReplicas: {{ .Values.frontend.autoscaling.maxReplicas | default 10 }}
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: {{ .Values.frontend.autoscaling.targetCPUUtilizationPercentage | default 70 }}
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        type: Utilization
-        averageUtilization: {{ .Values.frontend.autoscaling.targetMemoryUtilizationPercentage | default 80 }}
-  behavior:
-    scaleDown:
-      stabilizationWindowSeconds: 300
-      policies:
-      - type: Percent
-        value: 50
-        periodSeconds: 15
-    scaleUp:
-      stabilizationWindowSeconds: 0
-      policies:
-      - type: Percent
-        value: 100
-        periodSeconds: 15
-      - type: Pods
-        value: 4
-        periodSeconds: 15
-      selectPolicy: Max
+  minReplicaCount: {{ .Values.frontend.replicas }}
+  maxReplicaCount: {{ .Values.frontend.autoscaling.maxReplicas }}
+  triggers:
+    - type: datadog
+      metricType: AverageValue
+      metadata:
+        query: "{{ .Values.frontend.autoscaling.query }}"
+        queryValue: "{{ .Values.frontend.autoscaling.queryValue }}"
+        metricUnavailableValue: "{{ .Values.frontend.autoscaling.metricUnavailable }}"
+        timeout: "10s"
+      authenticationRef:
+        name: datadog-trigger-auth
 {{- end }}
 {{- end }}
