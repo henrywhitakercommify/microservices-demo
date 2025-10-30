@@ -94,7 +94,7 @@ checkoutService:
     enabled: true
     maxReplicas: 5
     query: "sum:trace.grpc.server.request.hits{service:demo-checkoutservice}.as_rate().rollup(sum, 5)"
-    queryValue: 50
+    queryValue: 100
     metricUnavailable: 0
   resources:
     requests:
@@ -202,6 +202,12 @@ productCatalogService:
   create: true
   replicas: 2
   name: productcatalogservice
+  autoscaling:
+    enabled: true
+    maxReplicas: 10
+    query: "sum:trace.grpc.server.request.hits{service:demo-productcatalogservice}.as_rate().rollup(sum, 5)"
+    queryValue: 150
+    metricUnavailable: 0
   # Specifies an extra latency to any request on productcatalogservice, by default no extra latency.
   extraLatency: ""
   resources:

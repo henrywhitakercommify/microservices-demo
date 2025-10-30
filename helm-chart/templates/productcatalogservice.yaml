@@ -197,4 +197,28 @@ spec:
         ports:
         - "3550"
 {{- end }}
+{{- if .Values.productCatalogService.autoscaling.enabled }}
+---
+# yaml-language-server: $schema=https://github.com/datreeio/CRDs-catalog/raw/refs/heads/main/keda.sh/scaledobject_v1alpha1.json
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: "{{ .Values.productCatalogService.name }}"
+spec:
+  scaleTargetRef:
+    name: "{{ .Values.productCatalogService.name }}"
+  minReplicaCount: {{ .Values.productCatalogService.replicas }}
+  maxReplicaCount: {{ .Values.productCatalogService.autoscaling.maxReplicas }}
+  triggers:
+    - type: datadog
+      metricType: AverageValue
+      metadata:
+        useClusterAgentProxy: "false"
+        query: "{{ .Values.productCatalogService.autoscaling.query }}"
+        queryValue: "{{ .Values.productCatalogService.autoscaling.queryValue }}"
+        metricUnavailableValue: "{{ .Values.productCatalogService.autoscaling.metricUnavailable }}"
+        timeout: "10s"
+      authenticationRef:
+        name: datadog-trigger-auth
+{{- end }}
 {{- end }}
