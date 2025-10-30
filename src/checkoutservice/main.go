@@ -33,7 +33,6 @@ import (
 	money "github.com/GoogleCloudPlatform/microservices-demo/src/checkoutservice/money"
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 
-	"github.com/sercand/kuberesolver"
 	"github.com/sercand/kuberesolver/v6"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"go.opentelemetry.io/otel"
