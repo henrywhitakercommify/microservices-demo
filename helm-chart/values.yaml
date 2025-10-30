@@ -131,7 +131,7 @@ frontend:
   autoscaling:
     enabled: true
     maxReplicas: 15
-    query: "sum:trace.http.server.request.hits{service:demo-frontend}.as_rate()"
+    query: "sum:trace.http.server.request.hits{service:demo-frontend}.as_rate().rollup(sum, 30)"
     queryValue: 50000
     metricUnavailable: 0
   rollout:
