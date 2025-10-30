@@ -24,7 +24,29 @@ metadata:
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- end }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: "{{ .Values.checkoutService.name }}"
+rules:
+  - apiGroups: ["discovery.k8s.io"]
+    resources: ["endpointslices"]
+    verbs: ["get", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: "{{ .Values.checkoutService.name }}"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: "{{ .Values.checkoutService.name }}"
+subjects:
+  - kind: ServiceAccount
+    name: "{{ .Values.checkoutService.name }}"
+    namespace: "{{ .Release.Namespace }}"
+{{- end }}
 ---
 {{- end }}
 apiVersion: apps/v1
@@ -84,17 +106,17 @@ spec:
         - name: PORT
           value: "5050"
         - name: PRODUCT_CATALOG_SERVICE_ADDR
-          value: "{{ .Values.productCatalogService.name }}:3550"
+          value: "kubernetes:///{{ .Values.productCatalogService.name }}.{{ .Release.Namespace }}:3550"
         - name: SHIPPING_SERVICE_ADDR
-          value: "{{ .Values.shippingService.name }}:50051"
+          value: "kubernetes:///{{ .Values.shippingService.name }}.{{ .Release.Namespace }}:50051"
         - name: PAYMENT_SERVICE_ADDR
-          value: "{{ .Values.paymentService.name }}:50051"
+          value: "kubernetes:///{{ .Values.paymentService.name }}.{{ .Release.Namespace }}:50051"
         - name: EMAIL_SERVICE_ADDR
-          value: "{{ .Values.emailService.name }}:5000"
+          value: "kubernetes:///{{ .Values.emailService.name }}.{{ .Release.Namespace }}:5000"
         - name: CURRENCY_SERVICE_ADDR
-          value: "{{ .Values.currencyService.name }}:7000"
+          value: "kubernetes:///{{ .Values.currencyService.name }}.{{ .Release.Namespace }}:7000"
         - name: CART_SERVICE_ADDR
-          value: "{{ .Values.cartService.name }}:7070"
+          value: "kubernetes:///{{ .Values.cartService.name }}.{{ .Release.Namespace }}:7070"
         {{- if .Values.tracing.enabled }}
         - name: COLLECTOR_SERVICE_ADDR
           value: "{{ .Values.tracing.endpoint }}"
