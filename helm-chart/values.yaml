@@ -132,7 +132,7 @@ frontend:
     enabled: true
     targetCPUUtilizationPercentage: 75
     targetMemoryUtilizationPercentage: 75
-    maxReplicas: 10
+    maxReplicas: 25
   rollout:
     analysis:
       enabled: true
