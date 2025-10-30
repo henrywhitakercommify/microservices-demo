@@ -25,6 +25,28 @@ metadata:
   {{- end }}
   {{- end }}
 ---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: "{{ .Values.frontend.name }}"
+rules:
+  - apiGroups: ["discovery.k8s.io"]
+    resources: ["endpointslices"]
+    verbs: ["get", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: "{{ .Values.frontend.name }}"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: "{{ .Values.frontend.name }}"
+subjects:
+  - kind: ServiceAccount
+    name: "{{ .Values.frontend.name }}"
+    namespace: "{{ .Release.Namespace }}"
+---
 {{- end }}
 # yaml-language-server: $schema=https://github.com/datreeio/CRDs-catalog/raw/refs/heads/main/argoproj.io/rollout_v1alpha1.json
 apiVersion: argoproj.io/v1alpha1
