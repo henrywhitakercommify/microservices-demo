@@ -130,9 +130,10 @@ frontend:
   singleSharedSession: false
   autoscaling:
     enabled: true
-    targetCPUUtilizationPercentage: 75
-    targetMemoryUtilizationPercentage: 75
-    maxReplicas: 25
+    maxReplicas: 10
+    query: "sum:trace.http.server.request.hits{service:demo-{{ .Values.frontend.name }}}.as_rate()"
+    queryValue: 10
+    metricUnavailable: 0
   rollout:
     analysis:
       enabled: true
