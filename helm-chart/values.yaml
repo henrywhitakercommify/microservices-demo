@@ -132,7 +132,7 @@ frontend:
     enabled: true
     maxReplicas: 10
     query: "sum:trace.http.server.request.hits{service:demo-frontend}.as_rate()"
-    queryValue: 50m
+    queryValue: 50000
     metricUnavailable: 0
   rollout:
     analysis:
