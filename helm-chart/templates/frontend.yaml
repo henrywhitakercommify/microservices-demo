@@ -375,7 +375,7 @@ metadata:
 spec:
   scaleTargetRef:
     name: "{{ .Values.frontend.name }}"
-    apiVersion: v1alpha1
+    apiVersion: argoproj.io/v1alpha1
     kind: Rollout
   minReplicaCount: {{ .Values.frontend.replicas }}
   maxReplicaCount: {{ .Values.frontend.autoscaling.maxReplicas }}
