@@ -211,8 +211,6 @@ metadata:
 spec:
   scaleTargetRef:
     name: "{{ .Values.checkoutService.name }}"
-    apiVersion: argoproj.io/v1alpha1
-    kind: Rollout
   minReplicaCount: {{ .Values.checkoutService.replicas }}
   maxReplicaCount: {{ .Values.checkoutService.autoscaling.maxReplicas }}
   triggers:
