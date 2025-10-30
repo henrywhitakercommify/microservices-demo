@@ -51,6 +51,7 @@ spec:
         admission.datadoghq.com/enabled: "true"
         tags.datadoghq.com/service: "demo-{{ .Values.cartService.name }}"
         tags.datadoghq.com/version: "{{ .Values.images.tag | default .Chart.AppVersion }}"
+        tags.datadoghq.com/env: ""
     spec:
       {{- if .Values.serviceAccounts.create }}
       serviceAccountName: {{ .Values.cartService.name }}
