@@ -201,4 +201,30 @@ spec:
         ports:
         - "5050"
 {{- end }}
+{{- if .Values.checkoutService.autoscaling.enabled }}
+---
+# yaml-language-server: $schema=https://github.com/datreeio/CRDs-catalog/raw/refs/heads/main/keda.sh/scaledobject_v1alpha1.json
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: "{{ .Values.checkoutService.name }}"
+spec:
+  scaleTargetRef:
+    name: "{{ .Values.checkoutService.name }}"
+    apiVersion: argoproj.io/v1alpha1
+    kind: Rollout
+  minReplicaCount: {{ .Values.checkoutService.replicas }}
+  maxReplicaCount: {{ .Values.checkoutService.autoscaling.maxReplicas }}
+  triggers:
+    - type: datadog
+      metricType: AverageValue
+      metadata:
+        useClusterAgentProxy: "false"
+        query: "{{ .Values.checkoutService.autoscaling.query }}"
+        queryValue: "{{ .Values.checkoutService.autoscaling.queryValue }}"
+        metricUnavailableValue: "{{ .Values.checkoutService.autoscaling.metricUnavailable }}"
+        timeout: "10s"
+      authenticationRef:
+        name: datadog-trigger-auth
+{{- end }}
 {{- end }}
