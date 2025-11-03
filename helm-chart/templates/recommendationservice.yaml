@@ -63,9 +63,17 @@ spec:
           type: {{ .Values.seccompProfile.type }}
         {{- end }}
       {{- end }}
+      {{- $name := .Values.recommendationService.name }}
       {{- with .Values.topologySpreadConstraints }}
       topologySpreadConstraints:
-        {{- . | toYaml | nindent 8}}
+      {{- range . }}
+        - maxSkew: 1
+          topologyKey: "{{.key }}"
+          whenUnsatisfiable: "{{ .whenUnsatisfiable }}"
+          labelSelector:
+            matchLabels:
+              app: "{{ $name }}"
+      {{- end }}
       {{- end }}
       containers:
       - name: server

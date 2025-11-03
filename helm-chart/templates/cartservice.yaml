@@ -70,9 +70,17 @@ spec:
         seccompProfile:
           type: {{ .Values.seccompProfile.type }}
         {{- end }}
+      {{- $name := .Values.cartService.name }}
       {{- with .Values.topologySpreadConstraints }}
       topologySpreadConstraints:
-        {{- . | toYaml | nindent 8}}
+      {{- range . }}
+        - maxSkew: 1
+          topologyKey: "{{.key }}"
+          whenUnsatisfiable: "{{ .whenUnsatisfiable }}"
+          labelSelector:
+            matchLabels:
+              app: "{{ $name }}"
+      {{- end }}
       {{- end }}
       containers:
       - name: server
