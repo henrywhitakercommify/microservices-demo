@@ -27,8 +27,8 @@ metadata:
   {{- end }}
 ---
 {{- end }}
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
 metadata:
   name: {{ .Values.productCatalogService.name }}
   namespace: {{ .Release.Namespace }}
@@ -114,6 +114,17 @@ spec:
             port: 3550
         resources:
           {{- toYaml .Values.productCatalogService.resources | nindent 10 }}
+  minReadySeconds: 30
+  revisionHistoryLimit: 3
+  rollbackWindow:
+    revisions: 3
+  strategy:
+    blueGreen:
+      activeService: {{ .Values.productCatalogService.name }}-active
+      previewService: {{ .Values.productCatalogService.name }}-preview
+      previewReplicaCount: 1
+      autoPromotionEnabled: false
+      autoPromotionSeconds: 60
 ---
 apiVersion: v1
 kind: Service
