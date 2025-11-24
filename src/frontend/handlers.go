@@ -718,6 +718,10 @@ func renderHTTPError(
 	err error,
 	code int,
 ) {
+	// Don't 500 if it's a context cancelled error
+	if errors.Is(err, context.Canceled) {
+		code = 499
+	}
 	log.WithField("error", err).Error("request error")
 	errMsg := fmt.Sprintf("%+v", err)
 
